@@ -91,7 +91,7 @@ $config['year'] = $date->format('Y');
 $config['month'] = $date->format('m');
 $config['day'] = $date->format('d');
 $config['include-audit'] = (bool) $args->getOpt('include-audit', false);
-$config['aws-region'] = $args->getOpt('aws-region', 'sa-east-1');
+$config['aws-region'] = $args->getOpt('aws-region', 'us-west-2');
 $config['newbase'] = format($args->getOpt('newbase', $config['base']), $config);
 
 //---
@@ -186,7 +186,7 @@ if ($userConfig['tempserver']) {
         getCommandIntoSsh(
             $downloadCommand
         )
-    );      
+    );
 } else {
     passthru($downloadCommand);
 }
@@ -300,7 +300,9 @@ if ($userConfig['tempserver']) {
     $user = $userConfig['tempserver-user'];
     $key = $userConfig['tempserver-sshkey'];
     $downloadfolder = $userConfig['tempserver-downloadfolder'];
-    
+
+    echo $cli->blue('Preparing download...') . "\n\n";
+
     passthru(
         format(
             'scp -i {key} {user}@{host}:{downloadfolder}/{newbase}.backup {backupFilename}',
@@ -365,7 +367,7 @@ function getCommandIntoSsh($command) {
     $key = $userConfig['tempserver-sshkey'];
     $downloadfolder = $userConfig['tempserver-downloadfolder'];
 
-    return format('ssh -o "StrictHostKeyChecking no" {user}@{host} -i {key} -t "cd {downloadfolder} && ' . $command . '"', 
+    return format('ssh -o "StrictHostKeyChecking no" {user}@{host} -i {key} -t "cd {downloadfolder} && ' . $command . '"',
         compact('user','host','key','downloadfolder'));
 }
 
