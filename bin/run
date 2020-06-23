@@ -26,7 +26,8 @@ $cli->description('Database restore tool for i-Educar.')
     ->opt('aws-region', 'AWS prefered region (can be informed in the config file).', false, 'string')
     ->opt('aws-key', 'AWS key (can be informed in the config file).', false, 'string')
     ->opt('aws-secret', 'AWS secret (can be informed in the config file).', false, 'string')
-    ->opt('aws-prefix', 'AWS search prefix (can be informed in the config file).', false, 'string');
+    ->opt('aws-prefix', 'AWS search prefix (can be informed in the config file).', false, 'string')
+    ->opt('jobs:j', 'Number of jobs', false, 'int');
 
 $args = $cli->parse($argv, true);
 $currDir = getcwd();
@@ -93,6 +94,7 @@ $config['day'] = $date->format('d');
 $config['include-audit'] = (bool) $args->getOpt('include-audit', false);
 $config['aws-region'] = $args->getOpt('aws-region', 'us-west-2');
 $config['newbase'] = format($args->getOpt('newbase', $config['base']), $config);
+$config['jobs'] = $args->getOpt('jobs');
 
 //---
 
@@ -339,8 +341,10 @@ if ($userConfig['tempserver']) {
         compact('databaseListFile', 'backupFilename')
     ));
 } else {
-    passthru(pgCmd('pg_restore -L {databaseListFile} --host={host} --port={port} --username={user} --dbname={newbase} {backupFilename}',
-        compact('databaseListFile', 'backupFilename')
+    $jobsFlag = getNumberOfJobsFlag($config['jobs']);
+    
+    passthru(pgCmd('pg_restore -L {databaseListFile} --host={host} --port={port} --username={user} --dbname={newbase} {backupFilename} {jobsFlag}',
+        compact('databaseListFile', 'backupFilename', 'jobsFlag')
     ));
 }
 
@@ -381,4 +385,12 @@ function getRestoreCommand($backupFilename, $databaseListFile){
 
 function getRemoveTableCommand($table, $databaseListFile) {
     return format('sed -i \'/TABLE DATA {table}/d\' {databaseListFile}', compact('table', 'databaseListFile'));
+}
+
+function getNumberOfJobsFlag($jobs) {
+    if (empty($jobs)) {
+        return '';
+    }
+
+    return "-j {$jobs}";
 }
