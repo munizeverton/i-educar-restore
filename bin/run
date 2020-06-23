@@ -361,6 +361,10 @@ echo $cli->blue('Cleaning up...');
 @unlink($databaseListFile);
 @unlink($backupFilename);
 
+passthru(pgCmd('psql -h {host} -p {port} -U {user} -c "{command}" -d {newbase}', [
+    'command' => "DELETE FROM public.settings WHERE key IN ('legacy.app.recaptcha_v3.public_key', 'legacy.app.recaptcha_v3.private_key');",
+]));
+
 if ($userConfig['tempserver']) {
     getCommandIntoSsh(
         'rm ' . $backupFilename
