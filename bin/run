@@ -342,7 +342,7 @@ if ($userConfig['tempserver']) {
     ));
 } else {
     $jobsFlag = getNumberOfJobsFlag($config['jobs']);
-    
+
     passthru(pgCmd('pg_restore -L {databaseListFile} --host={host} --port={port} --username={user} --dbname={newbase} {backupFilename} {jobsFlag}',
         compact('databaseListFile', 'backupFilename', 'jobsFlag')
     ));
@@ -360,6 +360,12 @@ echo $cli->blue('Cleaning up...');
 
 @unlink($databaseListFile);
 @unlink($backupFilename);
+
+if ($userConfig['tempserver']) {
+    getCommandIntoSsh(
+        'rm ' . $backupFilename
+    );
+}
 
 exit(0);
 
