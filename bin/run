@@ -221,6 +221,7 @@ if ($config['include-audit'] === false) {
         'modules.auditoria_geral',
         'pmieducar.auditoria_falta_componente_dispensa',
         'pmieducar.auditoria_nota_dispensa',
+        'public.ieducar_audit'
     ];
 
     foreach ($auditTables as $table) {
