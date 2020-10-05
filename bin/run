@@ -218,9 +218,6 @@ if ($userConfig['tempserver']) {
 if ($config['include-audit'] === false) {
     $auditTables = [
         'modules.auditoria',
-        'modules.auditoria_geral',
-        'pmieducar.auditoria_falta_componente_dispensa',
-        'pmieducar.auditoria_nota_dispensa',
         'public.ieducar_audit'
     ];
 
