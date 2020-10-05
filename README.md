@@ -83,6 +83,7 @@ OPTIONS
   --password, -P        DB password (can be informed in the config file).
   --port, -p            DB port (can be informed in the config file).
   --user, -u            DB user (can be informed in the config file).
+  --jobs, -j            Number of jobs used by postgres on restore
 
 $ restore -b ieducar
 ```
@@ -97,6 +98,7 @@ configurações tem comportamento especial:
 | date| Por padrão o script irá buscar por backups na data atual mas você pode informar alguma outra data com esta chave. Ex. `--date 2019-01-01`. Independente do formato que você usar para informar a data, internamente ela será convertida para o formato YYYY-MM-DD. |
 | aws-prefix | Quando o sistema for buscar pelo arquivo de backup no S3 ele irá usar esta chave como parâmetro para a busca. Por se tratar de um valor dinâmico você pode usar placeholders que serão substituidos pelos valores de outras chaves da configuração. Ex.: `--aws-prefix backup/ieducar_{date}`. Neste exemplo, na data 12/12/2018 o prefixo será `backup/ieducar_2018-12-12`. |
 | newbase | Por padrão o sistema irá baixar a base sendo buscada e irá restaurar com o mesmo nome. Isso quer dizer que se o banco já existir ele será sobrescrevido. Para evitar isto você pode informar um nome alternativo para a nova base. Ex.: `--newbase nova_restauracao`. A exemplo da chave `aws-prefix` você também pode usar placeholders no nome da nova base. Ex.: `--newbase ieducar_{year}_{month}_{day}`. |
+| jobs | Número de jobs usados pelo postgre ao restaurar a base. Isso pode melhorar consideravelmente o tempo usado para isso. Está disponível a partir da versão 8.4 do postgres |
 
 Além das chaves de configuração informadas acima, internamente você também tem
 acesso às seguintes chaves para serem usadas como placeholders:
